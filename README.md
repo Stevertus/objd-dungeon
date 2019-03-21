@@ -5,17 +5,13 @@ Nonetheless this is just an extension for my framework objD, so you are able to 
 
 ### Getting started
 Let's get started by taking a look at this dungeon that it generated with this package:
-<div style="width: 100%; height: 0px; position: relative; padding-bottom: 56.250%;"><iframe src="https://streamable.com/s/vaq26/wnests" frameborder="0" width="100%" height="100%" allowfullscreen style="width: 100%; height: 100%; position: absolute;"></iframe></div>
+https://streamable.com/s/vaq26/wnests
 
 We can divide this into several 'Structurepools' the pieces that make up the dungeon. 
 ![enter image description here](https://cdn.discordapp.com/attachments/554075979383963679/554419066807255080/2019-03-10_22.37.10.png)
 We notice it is actually just 6 different types here. Some have a connection to another room, some don't.
 In objd this setup looks like this:
 ```dart
-Dungeon(
-
-// defining the structure pools:
-
 Dungeon(
 {
 	"straight":  StructurePool(["straight/straight"], front: true),
@@ -26,7 +22,6 @@ Dungeon(
 	"end":  StructurePool(["end/end"])
 }
 )
-
 ```
 ## Structure Pools
 So in the first argument, we can define our room types and assign a StructurePool to each type.
