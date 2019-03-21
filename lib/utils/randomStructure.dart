@@ -14,7 +14,7 @@ class RandomStructure extends Widget {
 
     var score = Score(Entity.Selected(),"objd_random");
     return For.of([
-      RandomScore(Entity.Selected(),to:structures.length -1),
+      RandomScore(Entity.Selected(),to:structures.length -1,targetFileName: "random"),
       For(to: structures.length - 1,create: (int i){
         return If(Condition.score(score.matches(i)),Then:[
           SetBlock(Block.structure_block,location: Location.here(),nbt:{"name":pack == null ? structures[i] : pack + ":" + structures[i]})

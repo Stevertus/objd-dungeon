@@ -17,7 +17,7 @@ class SetStructure extends Widget {
     return For.of([
       tag.remove(),
       If(Condition.not(Score(Entity.Selected(), "dungeon_type").matchesRange(Range(from: 0,to: 100))),Then:[
-        RandomScore(Entity.Selected(),to:100),
+        RandomScore(Entity.Selected(),to:100,targetFileName: "random"),
         Score(Entity.Selected(), "dungeon_type")
           .setEqual(Score(Entity.Selected(), "objd_random")),
       ]),
