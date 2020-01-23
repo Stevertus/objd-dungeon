@@ -13,16 +13,16 @@ class RotateStructure extends Widget {
     var rot = Score(Entity.Selected(), "dungeon_rotation");
 
     return For.of([
-      If(rot.matches(1), Then: [
+      If(rot.matches(1), then: [
         Data.merge(Location.here(), nbt: {"rotation": "CLOCKWISE_90"})
       ]),
-      If(rot.matches(2), Then: [
+      If(rot.matches(2), then: [
         Data.merge(Location.here(), nbt: {"rotation": "CLOCKWISE_180"})
       ]),
-      If(rot.matches(3), Then: [
+      If(rot.matches(3), then: [
         Data.merge(Location.here(), nbt: {"rotation": "COUNTERCLOCKWISE_90"})
       ]),
-      If(mirror, Then: [
+      If(mirror, then: [
         Data.merge(Location.here(), nbt: {"mirror": "LEFT_RIGHT"})
       ]),
 
@@ -38,16 +38,16 @@ class RotateStructure extends Widget {
       ChangeRot(rot.matches(3), x: 1, mirror: mirror, size: size),
 
       // activate structure
-      SetBlock(Block.redstone_block, location: Location.rel(x: 0, y: 1, z: 0)),
+      SetBlock(Blocks.redstone_block, location: Location.rel(x: 0, y: 1, z: 0)),
 
       // clear blocks
       If(
           Condition.block(Location.rel(x: 0, y: 1, z: 0),
-              block: Block.redstone_block),
-          Then: [
-            SetBlock(Block.air, location: Location.rel(x: 0, y: 1, z: 0))
+              block: Blocks.redstone_block),
+          then: [
+            SetBlock(Blocks.air, location: Location.rel(x: 0, y: 1, z: 0))
           ]),
-      //If(Condition.block(Location.here(),block:Block.structure_block),Then:[SetBlock(Block.air,location:Location.here())]),
+      //If(Condition.block(Location.here(),block:Blocks.structure_block),then:[SetBlock(Blocks.air,location:Location.here())]),
     ]);
   }
 }

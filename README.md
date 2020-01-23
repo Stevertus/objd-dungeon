@@ -57,7 +57,7 @@ In code this could look like this:
 ```dart
 ...
 summon: Armorstand(Location.here(),tags:["dungeon_room","dungeon_new"],gravity:false),
-entity: Entity(type: EntityType.armor_stand,tags:["dungeon_room","dungeon_new"])
+entity: Entity(type: Entities.armor_stand,tags:["dungeon_room","dungeon_new"])
 ```
 
 To make the Dungeon Widget functional we also need to define a pack, where it should generate.
@@ -84,7 +84,7 @@ Dungeon(
    basePlate: false,
   ),
   entity: Entity(
-   type: EntityType.armor_stand,
+   type: Entities.armor_stand,
    tags: ["dungeon_room","dungeon_new"],
   ),
 ```
