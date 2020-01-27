@@ -21,9 +21,10 @@ class CreateNew extends Widget {
     if (summon == null ||
         !(summon is Summon ||
             summon is ArmorStand ||
-            summon is AreaEffectCloud)) throw ("You need a summon widget");
-    if (entity == null)
-      throw ("Please define an entity on which you want to apply generation");
+            summon is AreaEffectCloud)) throw ('You need a summon widget');
+    if (entity == null) {
+      throw ('Please define an entity on which you want to apply generation');
+    }
   }
 
   @override
@@ -33,34 +34,38 @@ class CreateNew extends Widget {
           to: pools.length - 1,
           create: (i) {
             var pool = pools.values.toList()[i];
-            if (pool.mirror != null && pool.mirror)
+            if (pool.mirror != null && pool.mirror) {
               return For.of([
                 _createRoom(pool.mirroredRange1,
                     front: pool.front, right: false, left: true),
                 _createRoom(pool.mirroredRange2,
                     front: pool.front, right: true, left: false)
               ]);
+            }
             return _createRoom(pool.range,
                 front: pool.front, right: pool.right, left: pool.left);
           }),
-      after != null ? after : For.of([]),
-      Score(Entity.Selected(), "dungeon_type").reset(),
-      Entity.Selected().removeTag("dungeon_new")
+      if(after != null) after,
+      Score(Entity.Selected(), 'dungeon_type').reset(),
+      Entity.Selected().removeTag('dungeon_new')
     ]);
   }
 
   Widget _createRoom(Range range,
       {bool front = false, bool left = false, bool right = false}) {
-    List<_NewRoom> rooms = [];
-    if (front != null && front)
+    var rooms = <_NewRoom>[];
+    if (front != null && front) {
       rooms.add(_NewRoom(Location.local(x: 0, y: 0, z: size[0].toDouble()),
           entity: entity, summon: summon));
-    if (left != null && left)
+    }
+    if (left != null && left) {
       rooms.add(_NewRoom(Location.local(x: size[0].toDouble(), y: 0, z: 0),
           entity: entity, summon: summon));
-    if (right != null && right)
+    }
+    if (right != null && right) {
       rooms.add(_NewRoom(Location.local(x: -size[0].toDouble(), y: 0, z: 0),
           entity: entity, summon: summon));
+    }
     return MatchRange(range, rooms);
   }
 }
@@ -74,18 +79,18 @@ class _NewRoom extends Widget {
 
   @override
   Widget generate(Context context) {
-    entity.arguments['distance'] = "..1";
-    return Execute(location: loc, targetFileName: "summonroom", children: [
+    entity.arguments['distance'] = '..1';
+    return Execute(location: loc, targetFileName: 'summonroom', children: [
       summon,
       Teleport(entity, to: Location.here(), facing: Entity.Selected()),
-      entity.addTag("dungeon_created_now"),
+      entity.addTag('dungeon_created_now'),
       If(
-          Condition.not(Score(Entity.Selected(), "dungeon_iter")
+          Condition.not(Score(Entity.Selected(), 'dungeon_iter')
               .matchesRange(Range(to: 1000))),
-          then: [Score(Entity.Selected(), "dungeon_iter").set(0)]),
-      Score(entity, "dungeon_iter")
-          .setEqual(Score(Entity.Selected(), "dungeon_iter")),
-      Score(entity, "dungeon_iter").add(),
+          then: [Score(Entity.Selected(), 'dungeon_iter').set(0)]),
+      Score(entity, 'dungeon_iter')
+          .setEqual(Score(Entity.Selected(), 'dungeon_iter')),
+      Score(entity, 'dungeon_iter').add(),
     ]);
   }
 }

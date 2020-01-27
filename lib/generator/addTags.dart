@@ -10,8 +10,8 @@ class AddStructureTags extends Widget {
 
   @override
   Widget generate(Context context) {
-    var mirror = Tag("dungeon_isMirrored", entity: Entity.Selected());
-    var rot = Score(Entity.Selected(), "dungeon_rotation");
+    var mirror = Tag('dungeon_isMirrored', entity: Entity.Selected());
+    var rot = Score(Entity.Selected(), 'dungeon_rotation');
 
     return For.of([
       mirror.remove(),
@@ -21,11 +21,14 @@ class AddStructureTags extends Widget {
           to: pools.length - 1,
           create: (i) {
             var pool = pools.values.toList()[i];
-            if (pool.mirror != null && pool.mirror)
+            if (pool.mirror != null && pool.mirror) {
               return MatchRange(
                 pool.mirroredRange2,
                 mirror.add(),
               );
+            }
+
+            return null;
           }),
       // save rotation to score
       If(Entity.Selected(horizontalRotation: Range(from: -10, to: 10)),
@@ -40,13 +43,14 @@ class AddStructureTags extends Widget {
           to: pools.length - 1,
           create: (i) {
             var pool = pools.values.toList()[i];
-            if (pool.mirror != null && pool.mirror)
+            if (pool.mirror != null && pool.mirror) {
               return For.of([
                 _matchRangeAddTag(pool.mirroredRange1,
                     front: pool.front, right: false, left: true),
                 _matchRangeAddTag(pool.mirroredRange2,
                     front: pool.front, right: true, left: false)
               ]);
+            }
             return _matchRangeAddTag(pool.range,
                 front: pool.front, right: pool.right, left: pool.left);
           }),
@@ -56,17 +60,17 @@ class AddStructureTags extends Widget {
 
 Widget _matchRangeAddTag(Range range,
     {bool left = false, bool right = false, bool front = false}) {
-  var isLeft = Tag("dungeon_door_left", entity: Entity.Selected()).add();
-  var isRight = Tag("dungeon_door_right", entity: Entity.Selected()).add();
-  var isFront = Tag("dungeon_door_front", entity: Entity.Selected()).add();
-  var isEnd = Tag("dungeon_end", entity: Entity.Selected()).add();
+  var isLeft = Tag('dungeon_door_left', entity: Entity.Selected()).add();
+  var isRight = Tag('dungeon_door_right', entity: Entity.Selected()).add();
+  var isFront = Tag('dungeon_door_front', entity: Entity.Selected()).add();
+  var isEnd = Tag('dungeon_end', entity: Entity.Selected()).add();
 
-  List<Tag> tags = [];
+  var tags = <Tag>[];
 
   if (left != null && left) tags.add(isLeft);
   if (right != null && right) tags.add(isRight);
   if (front != null && front) tags.add(isFront);
-  if (tags.length == 0) tags = [isEnd];
+  if (tags.isEmpty) tags = [isEnd];
 
   return MatchRange(range, tags);
 }

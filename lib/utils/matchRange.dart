@@ -10,8 +10,8 @@ class MatchRange extends Widget {
 
   @override
   Widget generate(Context context) {
-    if (then.length == 0) return For.of([]);
-    var rnd = Score(Entity.Selected(), "dungeon_type");
+    if (then.isEmpty) return For.of([]);
+    var rnd = Score(Entity.Selected(), 'dungeon_type');
     return If(Condition.score(rnd.matchesRange(range)), then: then);
   }
 }

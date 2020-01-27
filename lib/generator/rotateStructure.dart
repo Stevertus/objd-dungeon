@@ -9,21 +9,21 @@ class RotateStructure extends Widget {
 
   @override
   Widget generate(Context context) {
-    var mirror = Tag("dungeon_isMirrored", entity: Entity.Selected());
-    var rot = Score(Entity.Selected(), "dungeon_rotation");
+    var mirror = Tag('dungeon_isMirrored', entity: Entity.Selected());
+    var rot = Score(Entity.Selected(), 'dungeon_rotation');
 
     return For.of([
       If(rot.matches(1), then: [
-        Data.merge(Location.here(), nbt: {"rotation": "CLOCKWISE_90"})
+        Data.merge(Location.here(), nbt: {'rotation': 'CLOCKWISE_90'})
       ]),
       If(rot.matches(2), then: [
-        Data.merge(Location.here(), nbt: {"rotation": "CLOCKWISE_180"})
+        Data.merge(Location.here(), nbt: {'rotation': 'CLOCKWISE_180'})
       ]),
       If(rot.matches(3), then: [
-        Data.merge(Location.here(), nbt: {"rotation": "COUNTERCLOCKWISE_90"})
+        Data.merge(Location.here(), nbt: {'rotation': 'COUNTERCLOCKWISE_90'})
       ]),
       If(mirror, then: [
-        Data.merge(Location.here(), nbt: {"mirror": "LEFT_RIGHT"})
+        Data.merge(Location.here(), nbt: {'mirror': 'LEFT_RIGHT'})
       ]),
 
       ChangeRot(rot.matches(0), mirror: mirror, z: 1, size: size),

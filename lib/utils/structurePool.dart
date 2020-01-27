@@ -20,15 +20,16 @@ class StructurePool {
     this.pack,
   }) {
     if (bias != null) {
-      if (bias > 1 || bias <= 0)
-        throw ("You can't have a chance of more than 1 on a pool!");
+      if (bias > 1 || bias <= 0) {
+        throw ('You can\'t have a chance of more than 1 on a pool!');
+      }
       this.bias = (bias * 100).floor();
     }
   }
   List<String> getStructures(Context context) {
-    if (pack == null) pack = context.packId;
-    path = path != null ? path + "/" : "";
-    path = pack + ":" + path;
+    pack ??= context.packId;
+    path = path != null ? path + '/' : '';
+    path = pack + ':' + path;
     return List<String>.from(structures)
         .map<String>((struct) => path + struct)
         .toList();

@@ -9,27 +9,27 @@ class RandomStructure extends Widget {
 
   @override
   Widget generate(Context context) {
-    var score = Score(Entity.Selected(), "objd_random");
+    var score = Score(Entity.Selected(), 'objd_random');
     return For.of([
       RandomScore(Entity.Selected(),
-          to: structures.length - 1, targetFileName: "random"),
+          to: structures.length - 1, targetFileName: 'random'),
       For(
           to: structures.length - 1,
           create: (int i) {
             return If(Condition.score(score.matches(i)), then: [
               SetBlock(Blocks.structure_block, location: Location.here(), nbt: {
-                "name":
-                    pack == null ? structures[i] : pack + ":" + structures[i]
+                'name':
+                    pack == null ? structures[i] : pack + ':' + structures[i]
               })
             ]);
           }),
       Data.merge(Location.here(), nbt: {
-        "mode": "LOAD",
-        "ignoreEntities": 0,
-        "showboundingbox": 1,
-        "posX": -(size[0] - 1) ~/ 2,
-        "posY": 0,
-        "posZ": -(size[2] - 1) ~/ 2
+        'mode': 'LOAD',
+        'ignoreEntities': 0,
+        'showboundingbox': 1,
+        'posX': -(size[0] - 1) ~/ 2,
+        'posY': 0,
+        'posZ': -(size[2] - 1) ~/ 2
       })
     ]);
   }

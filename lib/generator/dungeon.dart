@@ -20,25 +20,27 @@ class Dungeon extends Widget {
   Widget summon;
   Entity entity;
 
-  Dungeon(this.pools,
-      {@required this.pack,
-      this.size = const [15, 8, 15],
-      Entity clearEntity,
-      this.afterGeneration,
-      @required this.entity,
-      @required this.summon,
-      this.start,
-      this.end,
-      this.startAndTimer = 10,
-      this.iterations = 5}) {
+  Dungeon(
+    this.pools, {
+    @required this.pack,
+    this.size = const [15, 8, 15],
+    Entity clearEntity,
+    this.afterGeneration,
+    @required this.entity,
+    @required this.summon,
+    this.start,
+    this.end,
+    this.startAndTimer = 10,
+    this.iterations = 5,
+  }) {
     _computePool();
-    if (pack.files == null) pack.files = [];
+    pack.files ??= [];
     if (clearEntity != null) {
-      double x = (size[0] - 1) / 2;
-      double z = (size[2] - 1) / 2;
+      var x = (size[0] - 1) / 2;
+      var z = (size[2] - 1) / 2;
       pack.files.add(
         File(
-          "clear",
+          'clear',
           child: Execute.asat(
             clearEntity,
             children: [
@@ -55,17 +57,17 @@ class Dungeon extends Widget {
     }
   }
 
-  _computePool() {
-    int perc = 100;
-    int currentLowest = 0;
-    int length = pools.length;
+  void _computePool() {
+    var perc = 100;
+    var currentLowest = 0;
+    var length = pools.length;
     // split the remaining percent
     pools.values.forEach((pool) {
       if (pool.bias != null) perc -= pool.bias;
       if (pool.mirror != null && pool.mirror) length++;
     });
     if (perc < 0) perc = 0;
-    int average = (perc ~/ length);
+    var average = (perc ~/ length);
     pools.values.forEach((pool) {
       var adding = average;
       if (pool.bias != null) adding = pool.bias;
@@ -87,49 +89,51 @@ class Dungeon extends Widget {
 
   @override
   Widget generate(Context context) {
-    pack.files.add(File("generate",
+    pack.files.add(File('generate',
         child: For.of([
-          Score(Entity.Selected(), "dungeon_type").reset(),
+          Score(Entity.Selected(), 'dungeon_type').reset(),
           If(
-              Condition.not(Score(Entity.Selected(), "dungeon_iter")
+              Condition.not(Score(Entity.Selected(), 'dungeon_iter')
                   .matchesRange(Range(from: iterations - 1))),
               then: [
-                File.execute("setstructure",
+                File.execute('setstructure',
                     child: SetStructure(pools, size: size, entity: entity))
               ]),
-          this.end != null
+          end != null
               ? If(
-                  Score(Entity.Selected(), "dungeon_iter")
+                  Score(Entity.Selected(), 'dungeon_iter')
                       .matchesRange(Range(from: iterations - 1)),
                   then: [
-                      File.execute("end",
+                      File.execute('end',
                           child: For.of([
                             RandomStructure(end.getStructures(context),
                                 size: size),
                           ]))
                     ])
               : For.of([]),
-          File.execute("addtags", child: AddStructureTags(pools)),
-          File.execute("rotate", child: RotateStructure(pools, size: size)),
-          File.execute("createnew",
+          File.execute('addtags', child: AddStructureTags(pools)),
+          File.execute('rotate', child: RotateStructure(pools, size: size)),
+          File.execute('createnew',
               child: CreateNew(pools,
                   size: size,
                   entity: entity,
                   summon: summon,
                   after: afterGeneration)),
-          Execute.asat(Entity(tags: ["dungeon_created_now"]), children: [
+          Execute.asat(Entity(tags: ['dungeon_created_now']), children: [
             Teleport(Entity.Selected(),
                 to: Location.here(), rot: Rotation.rel(x: 180, y: 0)),
-            Entity.Selected().removeTag("dungeon_created_now")
+            Entity.Selected().removeTag('dungeon_created_now')
           ])
         ])));
     if (start != null) {
-      entity.arguments["distance"] = "..1";
-      pack.files.add(File("start",
-          child: Execute.align("xz", children: [
+      entity.arguments['distance'] = '..1';
+      pack.files.add(
+        File(
+          'start',
+          child: Execute.align('xz', children: [
             summon,
-            entity.addTag("dungeon_start"),
-            entity.removeTag("dungeon_new"),
+            entity.addTag('dungeon_start'),
+            entity.removeTag('dungeon_new'),
             RandomStructure(start.getStructures(context), size: size),
             SetBlock(Blocks.redstone_block, location: Location.rel(y: 1)),
             AroundLocation(size[0].toDouble(), top: false, bottom: false,
@@ -139,19 +143,27 @@ class Dungeon extends Widget {
                 Teleport(entity, to: Location.here(), facing: loc)
               ]);
             }),
-            For(
-                to: 1,
-                create: (i) {
-                  entity.arguments.remove("distance");
-                }),
-            startAndTimer != null && startAndTimer >= 0
-                ? Repeat("repeat_gen",
-                    to: iterations - 1,
-                    ticks: startAndTimer,
-                    child: Execute.asat(entity,
-                        children: [File.execute("generate", create: false)]))
-                : For.of([])
-          ]).positioned(Location.rel(x: 0.5, z: 0.5))));
+            Builder(
+              (context) {
+                entity.arguments.remove('distance');
+                return startAndTimer != null && startAndTimer >= 0
+                    ? Repeat(
+                        'repeat_gen',
+                        to: iterations - 1,
+                        ticks: startAndTimer,
+                        child: Execute.asat(
+                          entity,
+                          children: [File.execute('generate', create: false)],
+                        ),
+                      )
+                    : null;
+              },
+            ),
+          ]).positioned(
+            Location.rel(x: 0.5, z: 0.5),
+          ),
+        ),
+      );
     }
 
     return For.of([pack]);
