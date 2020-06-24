@@ -44,11 +44,15 @@ class Dungeon extends Widget {
           child: Execute.asat(
             clearEntity,
             children: [
-              Fill(Blocks.air,
-                  area: Area.fromLocations(Location.rel(x: -x, z: -z),
-                      Location.rel(x: x, y: size[1].toDouble(), z: z))),
+              Fill(
+                Blocks.air,
+                area: Area.fromLocations(
+                  Location.rel(x: -x, z: -z),
+                  Location.rel(x: x, y: size[1].toDouble(), z: z),
+                ),
+              ),
               Kill(
-                Entity.Selected(),
+                Entity.Self(),
               )
             ],
           ),
@@ -72,15 +76,12 @@ class Dungeon extends Widget {
       var adding = average;
       if (pool.bias != null) adding = pool.bias;
       if (pool.mirror != null && pool.mirror) {
-        pool.range =
-            Range(from: currentLowest, to: currentLowest + 2 * adding - 1);
-        pool.mirroredRange1 =
-            Range(from: currentLowest, to: currentLowest + adding - 1);
+        pool.range = Range(currentLowest, currentLowest + 2 * adding - 1);
+        pool.mirroredRange1 = Range(currentLowest, currentLowest + adding - 1);
         currentLowest += adding;
-        pool.mirroredRange2 =
-            Range(from: currentLowest, to: currentLowest + adding - 1);
+        pool.mirroredRange2 = Range(currentLowest, currentLowest + adding - 1);
       } else {
-        pool.range = Range(from: currentLowest, to: currentLowest + adding - 1);
+        pool.range = Range(currentLowest, currentLowest + adding - 1);
       }
       if (pool.range.to >= 99) pool.range.to = 100;
       currentLowest += adding;
@@ -89,42 +90,64 @@ class Dungeon extends Widget {
 
   @override
   Widget generate(Context context) {
-    pack.files.add(File('generate',
+    pack.files.add(
+      File(
+        'generate',
         child: For.of([
-          Score(Entity.Selected(), 'dungeon_type').reset(),
+          Score(Entity.Self(), 'dungeon_type').reset(),
           If(
-              Condition.not(Score(Entity.Selected(), 'dungeon_iter')
-                  .matchesRange(Range(from: iterations - 1))),
-              then: [
-                File.execute('setstructure',
-                    child: SetStructure(pools, size: size, entity: entity))
-              ]),
+            Condition.not(Score(Entity.Self(), 'dungeon_iter')
+                .matchesRange(Range.from(iterations - 1))),
+            then: [
+              File.execute('setstructure',
+                  child: SetStructure(pools, size: size, entity: entity))
+            ],
+          ),
           end != null
               ? If(
-                  Score(Entity.Selected(), 'dungeon_iter')
-                      .matchesRange(Range(from: iterations - 1)),
+                  Score(Entity.Self(), 'dungeon_iter')
+                      .matchesRange(Range.from(iterations - 1)),
                   then: [
-                      File.execute('end',
-                          child: For.of([
-                            RandomStructure(end.getStructures(context),
-                                size: size),
-                          ]))
-                    ])
+                    File.execute(
+                      'end',
+                      child: For.of(
+                        [
+                          RandomStructure(end.getStructures(context),
+                              size: size),
+                        ],
+                      ),
+                    )
+                  ],
+                )
               : For.of([]),
           File.execute('addtags', child: AddStructureTags(pools)),
           File.execute('rotate', child: RotateStructure(pools, size: size)),
-          File.execute('createnew',
-              child: CreateNew(pools,
-                  size: size,
-                  entity: entity,
-                  summon: summon,
-                  after: afterGeneration)),
-          Execute.asat(Entity(tags: ['dungeon_created_now']), children: [
-            Teleport(Entity.Selected(),
-                to: Location.here(), rot: Rotation.rel(x: 180, y: 0)),
-            Entity.Selected().removeTag('dungeon_created_now')
-          ])
-        ])));
+          File.execute(
+            'createnew',
+            child: CreateNew(
+              pools,
+              size: size,
+              entity: entity,
+              summon: summon,
+              after: afterGeneration,
+            ),
+          ),
+          Execute.asat(
+            Entity(
+              tags: ['dungeon_created_now'],
+            ),
+            children: [
+              Teleport(
+                Entity.Self(),
+                to: Location.here(),
+                rot: Rotation.rel(x: 180, y: 0),
+              ),
+              Entity.Self().removeTag('dungeon_created_now'),
+            ],
+          )
+        ]),
+      ),
+    );
     if (start != null) {
       entity.arguments['distance'] = '..1';
       pack.files.add(

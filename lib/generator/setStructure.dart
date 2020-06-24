@@ -8,22 +8,25 @@ class SetStructure extends Widget {
   List<int> size;
   Entity entity;
   Map<String, StructurePool> pools;
-  SetStructure(this.pools,
-      {this.size = const [15, 8, 15], @required this.entity});
+  SetStructure(
+    this.pools, {
+    this.size = const [15, 8, 15],
+    @required this.entity,
+  });
 
   @override
   Widget generate(Context context) {
-    var tag = Tag('dungeon_isblocked', entity: Entity.Selected());
+    var tag = Tag('dungeon_isblocked', entity: Entity.Self());
 
     return For.of([
       tag.remove(),
       If(
-          Condition.not(Score(Entity.Selected(), 'dungeon_type')
-              .matchesRange(Range(from: 0, to: 100))),
+          Condition.not(
+              Score(Entity.Self(), 'dungeon_type').matchesRange(Range(0, 100))),
           then: [
-            RandomScore(Entity.Selected(), to: 100, targetFileName: 'random'),
-            Score(Entity.Selected(), 'dungeon_type')
-                .setEqual(Score(Entity.Selected(), 'objd_random')),
+            RandomScore(Entity.Self(), to: 100, targetFileName: 'random'),
+            Score(Entity.Self(), 'dungeon_type')
+                .setEqual(Score(Entity.Self(), 'objd_random')),
           ]),
       // set structure block
       For(
@@ -56,7 +59,7 @@ class SetStructure extends Widget {
           }),
       // if space blocked repeat
       If(tag, then: [
-        Score(Entity.Selected(), 'dungeon_type').add(15),
+        Score(Entity.Self(), 'dungeon_type').add(15),
         File.recursive()
       ]),
     ]);
@@ -69,13 +72,13 @@ class SetStructure extends Widget {
     bool right = false,
   }) {
     var conds = <Widget>[];
-    var tag = Entity.Selected().addTag('dungeon_isblocked');
+    var tag = Entity.Self().addTag('dungeon_isblocked');
     var ent = If(
       Entity(
           type: entity.arguments['type'] == null
               ? Entities.armor_stand
               : EntityType(entity.arguments['type'] as String),
-          distance: Range(to: 1)),
+          distance: Range.to(1)),
       then: [tag],
     );
 

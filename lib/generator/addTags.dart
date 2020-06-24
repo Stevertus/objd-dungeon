@@ -10,8 +10,8 @@ class AddStructureTags extends Widget {
 
   @override
   Widget generate(Context context) {
-    var mirror = Tag('dungeon_isMirrored', entity: Entity.Selected());
-    var rot = Score(Entity.Selected(), 'dungeon_rotation');
+    var mirror = Tag('dungeon_isMirrored', entity: Entity.Self());
+    var rot = Score(Entity.Self(), 'dungeon_rotation');
 
     return For.of([
       mirror.remove(),
@@ -31,13 +31,22 @@ class AddStructureTags extends Widget {
             return null;
           }),
       // save rotation to score
-      If(Entity.Selected(horizontalRotation: Range(from: -10, to: 10)),
-          then: [rot.set(1)]),
-      If(Entity.Selected(horizontalRotation: Range(from: 80, to: 110)),
-          then: [rot.set(2)]),
-      If(Entity.Selected(horizontalRotation: Range(from: 170, to: -170)),
-          then: [rot.set(3)]),
-      If(rot.matchesRange(Range(from: 4)), then: [rot.subtract(4)]),
+      If(
+        Entity.Self(horizontalRotation: Range(-10, 10)),
+        then: [rot.set(1)],
+      ),
+      If(
+        Entity.Self(horizontalRotation: Range(80, 110)),
+        then: [rot.set(2)],
+      ),
+      If(
+        Entity.Self(horizontalRotation: Range(170, -170)),
+        then: [rot.set(3)],
+      ),
+      If(
+        rot.matchesRange(Range.from(4)),
+        then: [rot.subtract(4)],
+      ),
 
       For(
           to: pools.length - 1,
@@ -60,10 +69,10 @@ class AddStructureTags extends Widget {
 
 Widget _matchRangeAddTag(Range range,
     {bool left = false, bool right = false, bool front = false}) {
-  var isLeft = Tag('dungeon_door_left', entity: Entity.Selected()).add();
-  var isRight = Tag('dungeon_door_right', entity: Entity.Selected()).add();
-  var isFront = Tag('dungeon_door_front', entity: Entity.Selected()).add();
-  var isEnd = Tag('dungeon_end', entity: Entity.Selected()).add();
+  var isLeft = Tag('dungeon_door_left', entity: Entity.Self()).add();
+  var isRight = Tag('dungeon_door_right', entity: Entity.Self()).add();
+  var isFront = Tag('dungeon_door_front', entity: Entity.Self()).add();
+  var isEnd = Tag('dungeon_end', entity: Entity.Self()).add();
 
   var tags = <Tag>[];
 

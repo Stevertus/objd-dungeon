@@ -45,9 +45,9 @@ class CreateNew extends Widget {
             return _createRoom(pool.range,
                 front: pool.front, right: pool.right, left: pool.left);
           }),
-      if(after != null) after,
-      Score(Entity.Selected(), 'dungeon_type').reset(),
-      Entity.Selected().removeTag('dungeon_new')
+      if (after != null) after,
+      Score(Entity.Self(), 'dungeon_type').reset(),
+      Entity.Self().removeTag('dungeon_new')
     ]);
   }
 
@@ -55,16 +55,25 @@ class CreateNew extends Widget {
       {bool front = false, bool left = false, bool right = false}) {
     var rooms = <_NewRoom>[];
     if (front != null && front) {
-      rooms.add(_NewRoom(Location.local(x: 0, y: 0, z: size[0].toDouble()),
-          entity: entity, summon: summon));
+      rooms.add(_NewRoom(
+        Location.local(x: 0, y: 0, z: size[0].toDouble()),
+        entity: entity,
+        summon: summon,
+      ));
     }
     if (left != null && left) {
-      rooms.add(_NewRoom(Location.local(x: size[0].toDouble(), y: 0, z: 0),
-          entity: entity, summon: summon));
+      rooms.add(_NewRoom(
+        Location.local(x: size[0].toDouble(), y: 0, z: 0),
+        entity: entity,
+        summon: summon,
+      ));
     }
     if (right != null && right) {
-      rooms.add(_NewRoom(Location.local(x: -size[0].toDouble(), y: 0, z: 0),
-          entity: entity, summon: summon));
+      rooms.add(_NewRoom(
+        Location.local(x: -size[0].toDouble(), y: 0, z: 0),
+        entity: entity,
+        summon: summon,
+      ));
     }
     return MatchRange(range, rooms);
   }
@@ -79,18 +88,23 @@ class _NewRoom extends Widget {
 
   @override
   Widget generate(Context context) {
+    final s = Scoreboard('dungeon_iter');
+
     entity.arguments['distance'] = '..1';
     return Execute(location: loc, targetFileName: 'summonroom', children: [
       summon,
-      Teleport(entity, to: Location.here(), facing: Entity.Selected()),
+      Teleport(entity, to: Location.here(), facing: Entity.Self()),
       entity.addTag('dungeon_created_now'),
       If(
-          Condition.not(Score(Entity.Selected(), 'dungeon_iter')
-              .matchesRange(Range(to: 1000))),
-          then: [Score(Entity.Selected(), 'dungeon_iter').set(0)]),
-      Score(entity, 'dungeon_iter')
-          .setEqual(Score(Entity.Selected(), 'dungeon_iter')),
-      Score(entity, 'dungeon_iter').add(),
+        Condition.not(
+          s[Entity.Self()] < 1000,
+        ),
+        then: [
+          s[Entity.Self()] >> 0,
+        ],
+      ),
+      s[entity] >> s[Entity.Self()],
+      s[entity] + 1,
     ]);
   }
 }

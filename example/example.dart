@@ -36,7 +36,7 @@ void main() {
           type: Entities.armor_stand,
           tags: ['dungeon_room', 'dungeon_new'],
         ),
-        afterGeneration: Tag('dungeon_new', entity: Entity.Selected()).remove(),
+        afterGeneration: Tag('dungeon_new', entity: Entity.Self()).remove(),
       ),
     ),
   );

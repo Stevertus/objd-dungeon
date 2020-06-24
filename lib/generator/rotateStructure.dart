@@ -9,8 +9,8 @@ class RotateStructure extends Widget {
 
   @override
   Widget generate(Context context) {
-    var mirror = Tag('dungeon_isMirrored', entity: Entity.Selected());
-    var rot = Score(Entity.Selected(), 'dungeon_rotation');
+    var mirror = Tag('dungeon_isMirrored', entity: Entity.Self());
+    var rot = Score(Entity.Self(), 'dungeon_rotation');
 
     return For.of([
       If(rot.matches(1), then: [

@@ -1,16 +1,16 @@
 name: objd_dungeon
 description: A quick and easy dungeon generator for objd.
-version: 0.1.3
+version: 0.1.4
 homepage: https://objd.stevertus.com
 repository: https://github.com/Stevertus/objd-dungeon
 issue_tracker: https://github.com/Stevertus/objd-dungeon/issues
-documentation: https://stevertus.com/objD/documentation/dungeon
 
 environment:
   sdk: ">=2.3.0 <3.0.0"
 
 dependencies:
-  objd: ^0.3.2
+  objd: ^0.3.3-1
+  meta: ^1.1.8
 
 dev_dependencies:
   pedantic: ^1.9.0

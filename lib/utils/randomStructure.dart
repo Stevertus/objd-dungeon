@@ -9,9 +9,9 @@ class RandomStructure extends Widget {
 
   @override
   Widget generate(Context context) {
-    var score = Score(Entity.Selected(), 'objd_random');
+    var score = Score(Entity.Self(), 'objd_random');
     return For.of([
-      RandomScore(Entity.Selected(),
+      RandomScore(Entity.Self(),
           to: structures.length - 1, targetFileName: 'random'),
       For(
           to: structures.length - 1,

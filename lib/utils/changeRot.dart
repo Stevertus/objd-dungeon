@@ -23,7 +23,7 @@ class ChangeRot extends Widget {
       return If(
         Condition.and([rot, mirror]),
         then: ret,
-        assignTag: Entity.Selected(),
+        assignTag: Entity.Self(),
       );
     }
     return If(rot, then: ret);
